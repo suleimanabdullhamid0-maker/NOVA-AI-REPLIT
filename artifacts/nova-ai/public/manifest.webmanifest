@@ -1,0 +1,12 @@
+{
+  "name": "NOVA AI",
+  "short_name": "NOVA",
+  "description": "Your personal intelligence workspace.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f3ee",
+  "theme_color": "#c9f35a",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

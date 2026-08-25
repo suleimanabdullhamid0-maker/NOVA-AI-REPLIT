@@ -1,0 +1,29 @@
+import { useState } from 'react';
+import { Check, Monitor, Moon, Save, Sun } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import { NovaShell, useTheme } from '@/components/nova-shell';
+
+type SettingsUser = { name?: string | null; email: string; role?: string; plan?: string; usage?: number; usageLimit?: number };
+type ProfileValues = { name: string; email: string };
+
+export function SettingsPage({ user }: { user?: SettingsUser }) {
+  const { theme, setTheme } = useTheme();
+  const [density, setDensity] = useState<'relaxed' | 'focused'>('relaxed');
+  const [saved, setSaved] = useState(false);
+  const form = useForm<ProfileValues>({ defaultValues: { name: user?.name || '', email: user?.email || '' } });
+  const saveProfile = (values: ProfileValues) => { void values; setSaved(true); window.setTimeout(() => setSaved(false), 2200); };
+
+  return <NovaShell user={user}>
+    <div className="mx-auto max-w-[980px] px-5 py-9 md:px-10 md:py-12">
+      <div className="nova-rise"><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Workspace / settings</p><h1 className="mt-3 font-[var(--app-font-serif)] text-5xl font-semibold tracking-[-.07em]">Make it yours.</h1><p className="mt-4 max-w-[460px] text-sm leading-6 text-muted-foreground">A few quiet controls for how NOVA feels when you open it each day.</p></div>
+      <div className="mt-11 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+        <section className="rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8 nova-rise nova-delay-1"><div className="flex items-start justify-between"><div><h2 className="text-sm font-semibold">Account details</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">The details attached to this workspace.</p></div><span className="rounded-full bg-accent/25 px-2.5 py-1 font-mono text-[9px] text-accent-foreground">ACCOUNT</span></div>
+          <Form {...form}><form onSubmit={form.handleSubmit(saveProfile)} className="mt-7 space-y-5" data-testid="form-account-settings"><label className="block"><span className="mb-2 block text-xs font-semibold">Name</span><input {...form.register('name')} className="h-11 w-full rounded-xl border border-input bg-background px-3.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20" data-testid="input-settings-name" /></label><label className="block"><span className="mb-2 block text-xs font-semibold">Email</span><input {...form.register('email')} readOnly className="h-11 w-full cursor-not-allowed rounded-xl border border-input bg-muted/60 px-3.5 text-sm text-muted-foreground outline-none" data-testid="input-settings-email" /></label><div className="flex items-center justify-between gap-4 border-t border-border pt-5"><p className="text-xs text-muted-foreground">Email changes are handled by your account provider.</p><button type="submit" className="flex shrink-0 items-center gap-2 rounded-xl bg-primary px-3.5 py-2.5 text-xs font-semibold text-primary-foreground hover:-translate-y-0.5" data-testid="button-save-settings"><Save size={14} /> {saved ? 'Saved' : 'Save name'}</button></div></form></Form>
+        </section>
+        <section className="rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8 nova-rise nova-delay-2"><h2 className="text-sm font-semibold">Appearance</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Choose the light that helps you think.</p><div className="mt-6 grid grid-cols-2 gap-2">{(['light', 'dark'] as const).map((item) => <button key={item} type="button" onClick={() => setTheme(item)} className={`relative rounded-2xl border p-3 text-left ${theme === item ? 'border-accent bg-accent/10' : 'border-border hover:bg-muted'}`} data-testid={`button-theme-${item}`}>{item === 'light' ? <Sun size={16} /> : <Moon size={16} />}<span className="mt-3 block text-xs font-semibold capitalize">{item}</span>{theme === item && <Check className="absolute right-3 top-3 text-accent-foreground" size={14} />}</button>)}</div><div className="mt-8 border-t border-border pt-6"><p className="text-xs font-semibold">Conversation spacing</p><p className="mt-1 text-[11px] leading-5 text-muted-foreground">More air, or a tighter working rhythm.</p><div className="mt-3 flex rounded-xl bg-muted p-1">{(['relaxed', 'focused'] as const).map((item) => <button key={item} type="button" onClick={() => setDensity(item)} className={`flex-1 rounded-lg py-2 text-[11px] font-semibold capitalize ${density === item ? 'bg-card shadow-sm' : 'text-muted-foreground'}`} data-testid={`button-density-${item}`}>{item}</button>)}</div></div></section>
+        <section className="rounded-3xl border border-border bg-primary p-6 text-primary-foreground shadow-sm md:p-8 lg:col-span-2 nova-rise nova-delay-3"><div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground/55">Plan & usage</p><h2 className="mt-2 font-[var(--app-font-serif)] text-3xl font-medium tracking-[-.05em]">{user?.plan === 'PREMIUM' ? 'NOVA Pro' : 'NOVA Free'}</h2><p className="mt-2 text-sm text-primary-foreground/60">You have used {user?.usage ?? 0} of {user?.usageLimit ?? 100} monthly messages.</p></div><div className="w-full max-w-[340px]"><div className="mb-2 flex justify-between font-mono text-[10px] text-primary-foreground/55"><span>Monthly allowance</span><span>{user?.usage ?? 0}/{user?.usageLimit ?? 100}</span></div><div className="h-2 rounded-full bg-primary-foreground/15"><div className="h-full rounded-full bg-accent" style={{ width: `${Math.min(100, ((user?.usage ?? 0) / (user?.usageLimit || 100)) * 100)}%` }} /></div></div></div></section>
+      </div>
+    </div>
+  </NovaShell>;
+}

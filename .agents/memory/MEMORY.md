@@ -1,0 +1,2 @@
+- [Provider readiness states](provider-readiness.md) — optional external capabilities must return an explicit configuration-required state rather than simulated success.
+- [OpenAPI/Zod compatibility](openapi-zod-compatibility.md) — this workspace's generator/runtime pair rejects top-level email and int helpers; use string patterns and numeric schemas.

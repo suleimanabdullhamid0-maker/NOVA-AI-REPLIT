@@ -1,0 +1,21 @@
+import { useState } from 'react';
+import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { Link } from 'wouter';
+import { NovaShell } from '@/components/nova-shell';
+
+type PricingUser = { name?: string | null; email: string; role?: string; plan?: string; usage?: number; usageLimit?: number };
+const features = ['Longer conversations with more context', 'Research mode with live source trails', 'Image generation for visual thinking', 'Priority access when NOVA is busy'];
+
+export function PricingPage({ user }: { user?: PricingUser }) {
+  const [selected, setSelected] = useState<'monthly' | 'annual'>('annual');
+  return <NovaShell user={user}>
+    <div className="mx-auto max-w-[1080px] px-5 py-9 md:px-10 md:py-12">
+      <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end nova-rise"><div><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Workspace / plans</p><h1 className="mt-3 max-w-[600px] font-[var(--app-font-serif)] text-5xl font-semibold leading-[.96] tracking-[-.075em]">More room for<br /><span className="text-muted-foreground">better questions.</span></h1></div><div className="flex rounded-xl bg-muted p-1"><button onClick={() => setSelected('monthly')} className={`rounded-lg px-3 py-2 text-xs font-semibold ${selected === 'monthly' ? 'bg-card shadow-sm' : 'text-muted-foreground'}`} data-testid="button-billing-monthly">Monthly</button><button onClick={() => setSelected('annual')} className={`rounded-lg px-3 py-2 text-xs font-semibold ${selected === 'annual' ? 'bg-card shadow-sm' : 'text-muted-foreground'}`} data-testid="button-billing-annual">Annual <span className="ml-1 text-accent-foreground">−20%</span></button></div></div>
+      <div className="mt-12 grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
+        <div className="rounded-3xl border border-border bg-card p-7 shadow-sm nova-rise nova-delay-1"><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">For exploring</p><h2 className="mt-4 font-[var(--app-font-serif)] text-3xl font-semibold tracking-[-.05em]">Free</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">A thoughtful starting place for everyday questions.</p><div className="my-8 h-px bg-border" /><p className="font-mono text-3xl font-medium tracking-[-.06em]">$0<span className="font-sans text-xs tracking-normal text-muted-foreground"> / forever</span></p><Link href="/chat" className="mt-8 flex h-11 items-center justify-center rounded-xl border border-border text-xs font-semibold hover:bg-muted" data-testid="link-continue-free">Continue with Free <ArrowRight size={14} className="ml-2" /></Link></div>
+        <div className="relative overflow-hidden rounded-3xl bg-primary p-7 text-primary-foreground shadow-lg nova-rise nova-delay-2 md:p-9"><div className="absolute right-7 top-7 grid size-14 place-items-center rounded-2xl bg-accent text-accent-foreground"><Sparkles size={22} /></div><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground/55">For going further</p><h2 className="mt-4 font-[var(--app-font-serif)] text-3xl font-semibold tracking-[-.05em]">Pro</h2><p className="mt-2 max-w-[360px] text-sm leading-6 text-primary-foreground/60">When the first answer is only the beginning.</p><div className="my-8 h-px bg-primary-foreground/15" /><p className="font-mono text-3xl font-medium tracking-[-.06em]">{selected === 'annual' ? '$12' : '$15'}<span className="font-sans text-xs tracking-normal text-primary-foreground/55"> / month</span></p><ul className="mt-7 space-y-3">{features.map((feature) => <li key={feature} className="flex items-start gap-2.5 text-xs text-primary-foreground/75"><Check size={14} className="mt-0.5 shrink-0 text-accent" />{feature}</li>)}</ul><a href="mailto:hello@nova.ai?subject=NOVA%20Pro" className="mt-8 flex h-11 items-center justify-center rounded-xl bg-accent text-xs font-bold text-accent-foreground hover:-translate-y-0.5" data-testid="link-start-pro">Talk to us about Pro <ArrowRight size={14} className="ml-2" /></a></div>
+      </div>
+      <p className="mt-10 text-center font-mono text-[10px] uppercase tracking-[0.17em] text-muted-foreground">No hidden limits. No noisy upsells. Just more space to think.</p>
+    </div>
+  </NovaShell>;
+}

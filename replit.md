@@ -1,6 +1,6 @@
-# [Project name]
+# NOVA AI
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+NOVA AI is a calm personal intelligence workspace for secure conversations, research, document analysis, image creation, and account administration.
 
 ## Run & Operate
 
@@ -14,7 +14,7 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
+- API: Python 3.11 + FastAPI/Uvicorn (the workspace's managed API service; provider adapters are environment-driven)
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
@@ -22,23 +22,29 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/nova-ai` — React/Vite application and PWA surface
+- `artifacts/api-server/src/routes/nova.ts` — auth, conversations, assistant capability states, billing, and admin routes
+- `lib/api-spec/openapi.yaml` — API contract source of truth
+- `lib/db/src/schema/index.ts` — PostgreSQL schema for users, sessions, conversations, and messages
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Sessions are httpOnly cookie-backed records in PostgreSQL; passwords are salted with Node's built-in scrypt.
+- The configured admin email is promoted to ADMIN + PREMIUM on login when `ADMIN_PASSWORD` is present.
+- Provider-dependent capabilities fail explicitly with `configuration_required` until their secrets or managed integrations exist.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Users can sign up, sign in, maintain persistent conversation history, switch assistant modes, view usage limits, choose a premium plan, and access a protected admin console. The PWA manifest is included for installability and later native wrapping.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Never hard-code credentials or provider keys.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run `pnpm --filter @workspace/api-spec run codegen` after OpenAPI changes, then run `pnpm run typecheck`.
+- The first admin account is created/promoted only when `ADMIN_PASSWORD` is available through Replit Secrets.
 
 ## Pointers
 

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "NOVA AI"
+description = "A production-ready AI assistant for conversations, research, document analysis, image generation, subscriptions, and secure administration."
+version = "1.0.0"
+id = "artifacts/nova-ai"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22814
+
+[services.development]
+run = "pnpm --filter @workspace/nova-ai run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nova-ai", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nova-ai/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22814"
+BASE_PATH = "/"
